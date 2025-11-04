@@ -30,8 +30,13 @@
                     <li><a href="/blog.html">Blog</a></li>
                 </ul>
             </nav>
-            <!-- <label><input name="color-scheme" type="radio" value="light"> Forced Light</label>
-            <label><input name="color-scheme" type="radio" value="dark"> Forced Dark</label> -->
+
+            <label class="theme-toggle" aria-label="Toggle between light and dark theme">
+                <input type="checkbox" name="color-scheme" aria-label="Dark mode toggle">
+                <span class="toggle-track">
+                    <span class="toggle-thumb"></span>
+                </span>
+            </label>
         </header>
         <main>
             <section aria-label="Welcome title"> <!-- using label instead of labelledby since "Press Start" not descriptive-->
@@ -42,54 +47,8 @@
                     <a href="/projects.html" role="button">View Levels</a>
                 </p>
             </section>
-            <section aria-label="explore-title">
-                <ul> <!-- Now that I think about it, should these be wrapped in <nav>...? -->
-                    <li>
-                        <article>
-                            <a href="/resume.html" aria-label="About Kevin Cohen">
-                                <figure>
-                                    <img src="https://placehold.co/100x100?text=+" alt="Placeholder image (user icon)">
-                                    <figcaption>
-                                        <h3>About</h3>
-                                        <p>Learn about the player behind the screen</p>
-                                    </figcaption>
-                                </figure>
-                            </a>
-                        </article>
-                    </li>
-                    <li>
-                        <article>
-                            <a href="/projects.html" aria-label="Projects by Kevin Cohen">
-                                <figure>
-                                    <img src="https://placehold.co/100x100?text=+" alt="Placeholder image (game controller)">
-                                    <figcaption>
-                                        <h3>Projects</h3>
-                                        <p>Explore completed levels and achievements</p>
-                                    </figcaption>
-                                </figure>
-                            </a>
-                        </article>
-                    </li>
-                    <li id="uncertain"> <!-- Which is better? Article/figure combo or plain <a>? -->
-                        <a href="/blog.html" aria-label="Blog by Kevin Cohen">
-                            <img src="https://placehold.co/100x100?text=+" alt="Placeholder image (book)">
-                            <h3>Blog</h3>
-                            <p>Read the developer's quest log entries</p>
-                        </a>
-                        <!-- <article>
-                            <a href="/blog.html" aria-label="Blog by Kevin Cohen">
-                                <figure>
-                                    <img src="https://placehold.co/100x100?text=+" alt="Placeholder image">
-                                    <figcaption>
-                                        <h3>Blog</h3>
-                                        <p>Read the developer's quest log entries</p>
-                                    </figcaption>
-                                </figure>
-                            </a>
-                        </article> -->
-                    </li>
-                </ul>
-            </section>
+
+            <!-- I removed the explore section from here for sake of time  -->
 
             <!-- This would be where the "Achievements" section goes, but after consideration I don't think I want to include it-->
 
@@ -109,41 +68,7 @@
                 </address>
                 <small>&copy; Kevin Cohen<br>Press Start to continue</small> <!-- <small> makes more sense than <p>? -->
             </section>
-            <section aria-labelledby="contact-me-title"> <!-- I dont actually want a form on my resume site, only adding it here for hw requirement... -->
-                <h2 id="contact-me-title">Contact Me</h2>
-
-                <form method="get"> <!-- post is better for a contact form, but using post rn would cause a 405 error... -->
-                    <fieldset>
-                        <legend>Your Details</legend>
-
-                        <label for="name">Name:</label>
-                        <input id="name" name="name" type="text" required>
-
-                        <label for="email">Email:</label>
-                        <input id="email" name="email" type="email" required>
-                    </fieldset>
-
-                    <fieldset>
-                        <legend>Message</legend>
-
-                        <label for="subject">Subject:</label>
-                        <input id="subject" name="subject" type="text">
-
-                        <label for="message">Your Message:</label>
-                        <textarea id="message" name="message" rows="5" cols="40"></textarea>
-                    </fieldset>
-
-                    <input type="submit" value="Send Message">
-                </form>
-                <dialog id="contact-confirm" open> <!-- I've left a permanently open confirmation message since we can't use JS yet -->
-                    <h2>Message Sent!</h2>
-                    <p>Thanks for reaching out. I'll get back to you soon.</p>
-                    <form method="dialog">
-                        <button>Close</button>
-                    </form>
-                </dialog>
-            </section>
-            <kc-hello-log></kc-hello-log>
+            
         </footer>
         <!-- This obviously doesn't actually exist... -->
         <script>

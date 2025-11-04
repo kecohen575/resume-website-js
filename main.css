@@ -1,29 +1,29 @@
 :root {
     /* color palette */
     color-scheme: light dark;
-    --background: light-dark(white, rgb(16, 16, 24));
+    --background: light-dark(#f1eee4f2, rgb(16, 16, 24));
     --foreground: light-dark(white, #171726);
     --primary-text: light-dark(#7547d1, #c34cff);
     --secondary-text: light-dark(#40aabf, #00ffff);
     --tertiary-text: light-dark(green, #66cc66);
     --button-text: light-dark(#263759, #ccffcc);
+
+    --theme-transition-duration: 0.3s;
 }
 
-/* :root {
-  &:has(input[name="color-scheme"][value="light"]:checked) {
-    color-scheme: light;
-  }
-  &:has(input[name="color-scheme"][value="dark"]:checked) {
+:root:has(input[name="color-scheme"]:checked) {
     color-scheme: dark;
-  }
-} */
+}
+:root:has(input[name="color-scheme"]:not(:checked)) {
+    color-scheme: light;
+}
 
 /* where should this go? */
 @font-face {
-  font-family: 'PixelFont';
-  src: url('assets/fonts/PressStart2P.woff2') format('woff2'),
-       url('assets/fonts/PressStart2P.ttf') format('truetype'); /* does this work the same as <picture>? will it only load woff2 unless not supported?
-  font-display: swap; /* is this the right choice? with auto/swap im noticing the swap when saving the file, but not when refreshing the page */
+    font-family: 'PixelFont';
+    src: url('assets/fonts/PressStart2P.woff2') format('woff2'),
+        url('assets/fonts/PressStart2P.ttf') format('truetype'); /* does this work the same as <picture>? will it only load woff2 unless not supported?
+    font-display: swap; /* is this the right choice? with auto/swap im noticing the swap when saving the file, but not when refreshing the page */
 }
 
 body {
@@ -35,6 +35,12 @@ body {
     letter-spacing: 0.04em;
     color: CanvasText; /* does this eliminate the need for fallbacks in later var usage? */
     /* image-rendering: pixelated; TODO: evaluate usage, maybe will be good for profile pic */
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+
+    transition: background-color var(--theme-transition-duration) ease,
+                color var(--theme-transition-duration) ease;
 }
 
 /* tablet */
@@ -68,6 +74,7 @@ header {
     gap: 1rem;
     padding: 0.75rem 1rem;
     flex-wrap: wrap;
+    transition: background-color var(--theme-transition-duration) ease;
 }
 .brand {
   display: flex;
@@ -106,6 +113,69 @@ nav a[aria-current="page"] {
   border-color: currentColor;
 }
 
+/* theme toggle styling - single switch */
+.theme-toggle {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+}
+.theme-toggle input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+.toggle-track {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  width: 3.5rem;
+  height: 1.75rem;
+  background-color: var(--foreground);
+  border: 2px solid var(--primary-text);
+  padding: 0.125rem;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+.toggle-thumb {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.25rem;
+  height: 1.25rem;
+  background-color: var(--primary-text);
+  transition: transform 0.3s ease, background-color 0.3s ease;
+  /* sun icon for light mode */
+  &::before {
+    content: '☀';
+    font-size: 0.75rem;
+    color: var(--foreground);
+  }
+}
+/* checked state - dark mode */
+.theme-toggle input:checked ~ .toggle-track {
+  background-color: var(--foreground);
+}
+.theme-toggle input:checked ~ .toggle-track .toggle-thumb {
+  transform: translateX(1.75rem);
+  /* moon icon for dark mode */
+  &::before {
+    content: '☾';
+  }
+}
+/* hover state */
+.theme-toggle:hover .toggle-track {
+  border-color: var(--secondary-text);
+}
+/* focus state for accessibility */
+.theme-toggle input:focus-visible ~ .toggle-track {
+  outline: 2px solid var(--primary-text);
+  outline-offset: 2px;
+}
+
 /* welcome block styling */
 section[aria-label="Welcome title"] {
   display: flex;
@@ -114,15 +184,16 @@ section[aria-label="Welcome title"] {
   justify-content: center;
   margin-block-start: 2.5rem;
 
-  /* center the block and set width */
   margin-inline: auto;
-  max-width: 50ch;                /* matches future cards’ width */
+  max-width: 50ch;
   text-align: center;
 
-  /* inverse colors */
   background-color: var(--foreground);
   border: 3px solid var(--primary-text, rebeccapurple);
   padding: 2rem 1.5rem;
+
+  transition: background-color var(--theme-transition-duration) ease,
+              border-color var(--theme-transition-duration) ease;
 }
 /* headline */
 section[aria-label="Welcome title"] h1 {
@@ -144,7 +215,7 @@ section[aria-label="Welcome title"] a[role="button"] {
   transition: background 0.2s ease;
 }
 section[aria-label="Welcome title"] p:last-of-type {
-  margin-top: 1.25rem;   /* space below the intro paragraph */
+  margin-top: 1.25rem;
 }
 section[aria-label="Welcome title"] a[role="button"]:hover,
 section[aria-label="Welcome title"] a[role="button"]:focus {
@@ -152,7 +223,148 @@ section[aria-label="Welcome title"] a[role="button"]:focus {
   color: CanvasText;
 }
 
+aside[aria-hidden="true"] {
+  display: flex;
+  justify-content: center;   /* centers the paragraph horizontally */
+  margin-block-start: 1.25rem; /* space below welcome section */
+}
+aside[aria-hidden="true"] p {
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  opacity: 0.85;
+  text-align: center;
+}
 
+/* main content area */
+main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* footer background */
+footer {
+  background-color: var(--foreground);
+  margin-block-start: auto;
+  padding: 1.5rem 1rem 1.5rem;
+  transition: background-color var(--theme-transition-duration) ease;
+}
+
+/* contact section styling */
+footer section[aria-labelledby="contact-header"] {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  /* center the block and set width */
+  margin-inline: auto;
+  max-width: 50ch;
+  text-align: center;
+
+  /* border only, background inherited from footer */
+  border: 3px solid var(--primary-text, rebeccapurple);
+  padding: 1.25rem 1.5rem;
+
+  transition: border-color var(--theme-transition-duration) ease;
+}
+
+/* contact heading */
+footer section[aria-labelledby="contact-header"] h2 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  color: var(--primary-text);
+}
+
+/* reset address styling */
+footer section[aria-labelledby="contact-header"] address {
+  font-style: normal;
+  width: 100%;
+}
+
+/* contact links list */
+footer section[aria-labelledby="contact-header"] ul {
+  list-style: none;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  justify-content: center;
+}
+
+/* individual contact link cards */
+footer section[aria-labelledby="contact-header"] li {
+  display: block;
+}
+
+footer section[aria-labelledby="contact-header"] a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1.25rem;
+  border: 2px solid var(--primary-text);
+  background: transparent;
+  color: var(--button-text);
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: background 0.2s ease, transform 0.1s ease;
+}
+
+footer section[aria-labelledby="contact-header"] a:hover,
+footer section[aria-labelledby="contact-header"] a:focus {
+  background: var(--primary-text);
+  color: CanvasText;
+  transform: translateY(-2px);
+}
+
+/* icon placeholder - add ::before for icons */
+footer section[aria-labelledby="contact-header"] a::before {
+  content: '';
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.25rem;
+  height: 1.25rem;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  flex-shrink: 0;
+}
+
+/* specific icons for each link type */
+footer section[aria-labelledby="contact-header"] a[href^="mailto"]::before {
+  content: '✉';
+  background: none;
+  font-size: 1rem;
+  line-height: 1;
+}
+
+footer section[aria-labelledby="contact-header"] a[href*="github"]::before {
+  content: '⚙';
+  background: none;
+  font-size: 1rem;
+  line-height: 1;
+}
+
+footer section[aria-labelledby="contact-header"] a[href*="linkedin"]::before {
+  content: '🔗';
+  background: none;
+  font-size: 1rem;
+  line-height: 1;
+}
+
+/* copyright text */
+footer section[aria-labelledby="contact-header"] small {
+  margin-top: 1rem;
+  display: block;
+  opacity: 0.85;
+}
 
 h1, h2, h3, a[role='button'], small { text-transform: uppercase; }
 
