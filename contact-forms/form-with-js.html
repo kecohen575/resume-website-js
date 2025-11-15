@@ -177,9 +177,8 @@
             </fieldset>
 
             <input name="possible_bot" value="true" type="hidden">
+            <input name="form-errors" id="form-errors" type="hidden">
 
-            <!-- <output id="error-message">Too many characters</output>
-            <output id="info-message">Please use letters or numbers</output> -->
             <output id="info-message"></output>
             <output id="error-message"></output>
             
@@ -192,12 +191,17 @@
                 const emailInput = document.getElementById('email');
                 const subjectInput = document.getElementById('subject');
                 const commentsInput = document.getElementById('comments');
+                const formErrorsInput = document.getElementById('form-errors');
+                const submitBtn = document.querySelector('input[type="submit"]');
 
                 const errorOutput = document.getElementById('error-message');
                 const infoOutput = document.getElementById('info-message');
 
                 // Track which fields have been touched by the user
                 const touched = {};
+
+                const form_errors = [];
+                let submitAttempt = 0;
 
                 // Shows the first field's error in form order (only for touched fields)
                 function updateErrorDisplay() {
@@ -399,6 +403,45 @@
                     // Update character count in info message
                     updateCharacterCount(commentsInput, maxLength);
                 });
+
+                submitBtn.addEventListener('click', (event) => {
+                    submitAttempt++;
+
+                    const fields = [ // There HAS to be a better way to do this...
+                        { key: 'name',     input: nameInput },
+                        { key: 'email',    input: emailInput },
+                        { key: 'subject',  input: subjectInput },
+                        { key: 'comments', input: commentsInput }
+                    ];
+
+                    const attemptErrors = [];
+
+                    // Look at each field's validity at the moment of submission
+                    for (const field of fields) {
+                        if (!field.input.checkValidity()) {
+                            attemptErrors.push({
+                                field: field.key,
+                                type: 'validation',
+                                message: field.input.validationMessage,
+                                value: field.input.value,
+                                submitAttempt,
+                                time: new Date().toISOString()
+                            });
+                        }
+                    }
+
+                    if (attemptErrors.length > 0) {
+                        // This submit attempt FAILED — prevent submission and record errors
+                        event.preventDefault(); // is this the right usage? doesnt it already stop submission of invalid forms?
+                        form_errors.push(...attemptErrors);
+                        formErrorsInput.value = JSON.stringify(form_errors);
+                    } else {
+                        // This submit is valid — include only history of previous failed attempts
+                        formErrorsInput.value = JSON.stringify(form_errors);
+                        // Let the browser submit normally
+                    }
+                });
+
             });
         </script>
     </body>
