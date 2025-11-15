@@ -131,6 +131,20 @@
                 70%  { opacity: 1; }
                 100% { opacity: 0; }
             }
+
+            #info-message.char-count-normal {
+                font-weight: bold;
+            }
+
+            #info-message.char-count-warning {
+                color: #d97706;
+                font-weight: bold;
+            }
+
+            #info-message.char-count-error {
+                color: #dc2626;
+                font-weight: bold;
+            }
         </style>
     </head>
     <body>
@@ -166,9 +180,9 @@
 
             <!-- <output id="error-message">Too many characters</output>
             <output id="info-message">Please use letters or numbers</output> -->
-            <output id="error-message"></output>
             <output id="info-message"></output>
-
+            <output id="error-message"></output>
+            
             <input type="submit" value="Send Message">
         </form>
         <script>
@@ -239,9 +253,39 @@
                     });
                 }
 
+                function updateCharacterCount(textareaElement, maxLength) {
+                    const currentLength = textareaElement.value.length;
+                    const remaining = maxLength - currentLength;
+
+                    infoOutput.classList.remove('char-count-normal', 'char-count-warning', 'char-count-error');
+
+                    if (currentLength >= maxLength) {
+                        // At or over the limit (error)
+                        if (currentLength > maxLength) {
+                            infoOutput.textContent = `Character limit exceeded by ${currentLength - maxLength}!`;
+                        } else {
+                            infoOutput.textContent = `0 characters remaining`;
+                        }
+                        infoOutput.classList.add('char-count-error');
+                    } else if (remaining <= 50) {
+                        // Near the limit (warning)
+                        infoOutput.textContent = `${remaining} characters remaining`;
+                        infoOutput.classList.add('char-count-warning');
+                    } else if (currentLength > 0) {
+                        // Normal count (green)
+                        infoOutput.textContent = `${remaining} characters remaining`;
+                        infoOutput.classList.add('char-count-normal');
+                    } else {
+                        infoOutput.textContent = '';
+                    }
+                }
+
                 // Set up input masking for fields with patterns
                 maskInput(nameInput, /[A-Za-zÀ-ÖØ-öø-ÿ '\-]/, 'Name');
                 maskInput(subjectInput, /[A-Za-zÀ-ÖØ-öø-ÿ0-9 .,!?'\-]/, 'Subject');
+
+                // Initialize character count display
+                updateCharacterCount(commentsInput, commentsInput.maxLength);
 
                 nameInput.addEventListener('input', (event) => {
                     touched.name = true;
@@ -328,14 +372,19 @@
                 commentsInput.addEventListener('input', () => {
                     touched.comments = true;
                     const v = commentsInput.validity;
+                    const currentLength = commentsInput.value.length;
+                    const maxLength = commentsInput.maxLength;
                     let message = '';
 
-                    if (v.valueMissing) {
+                    // Check if over the limit (this shouldn't happen with maxlength, but just in case)
+                    if (currentLength > maxLength) {
+                        message = `Comments must be ${maxLength} characters or less.`;
+                    } else if (v.valueMissing) {
                         message = 'Comments are required.';
                     } else if (v.tooShort) {
                         message = `Comments must be at least ${commentsInput.minLength} characters.`;
                     } else if (v.tooLong) {
-                        message = `Comments must be ${commentsInput.maxLength} characters or less.`;
+                        message = `Comments must be ${maxLength} characters or less.`;
                     }
 
                     if (message) {
@@ -346,6 +395,9 @@
 
                     commentsInput.reportValidity();
                     updateErrorDisplay();
+
+                    // Update character count in info message
+                    updateCharacterCount(commentsInput, maxLength);
                 });
             });
         </script>
