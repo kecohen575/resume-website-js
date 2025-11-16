@@ -39,6 +39,9 @@ PART 2: CSS
   - maybe i make it toggle-able
 - im noticing some page jankiness coming from the images loading in...
 - also some flash of unstyled text, how to address?
+- the buttons in the contact footer are not equal size and consistent spacing, makes everything look off-center
+- on the home page, hovering over buttons leaves text black, but for the buttons in skill tree they turn white
+- in light mode, the yellow text in experience section is hard to read but looks great in dark mode. maybe turn it orange?
 
 
 

@@ -26,6 +26,7 @@
             .contact-form-layout h1 {
                 text-align: center;
                 margin: 0;
+                color: var(--primary-text);
             }
 
             .contact-form-layout form {
@@ -51,18 +52,18 @@
                 font-weight: bold;
                 font-size: 1.2rem;
                 margin-bottom: 0.5rem;
-                color: var(--primary-text);
+                color: var(--secondary-text);
             }
 
             label {
                 display: block;
-                color: var(--secondary-text);
+                color: var(--button-text);
             }
 
             .optional-indicator {
                 font-size: 0.9rem;
                 font-style: italic;
-                color: color-mix(in srgb, CanvasText 60%, var(--secondary-text));
+                color: var(--tertiary-text);
             }
 
             input,
@@ -118,15 +119,17 @@
             input[type="submit"] {
                 align-self: flex-start;
                 background-color: var(--primary-text);
-                color: var(--button-text);
+                color: CanvasText;
                 padding: 0.5rem 1rem;
                 border: none;
                 border-radius: 0;
                 cursor: pointer;
+                transition: background-color var(--theme-transition-duration) ease,
+                            color var(--theme-transition-duration) ease;
             }
 
             input[type="submit"]:hover {
-                background-color: var(--secondary-text);
+                background-color: color-mix(in srgb, var(--secondary-text) 70%, var(--primary-text));
             }
 
             .flash-error {
